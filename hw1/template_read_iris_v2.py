@@ -20,6 +20,7 @@ import numpy as np
 if len(sys.argv) < 2:
     print('usage: ' + sys.argv[0] + ' text_file_name')
 else:
+    pass
     ##############################################################
     # WRITE YOUR OWN CODE LINES
     # - open the input file, without pandas or csv packages
@@ -28,3 +29,4 @@ else:
     # - compute mean and standard deviation
     # - disply them 
     ##############################################################
+    
