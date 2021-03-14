@@ -4,8 +4,6 @@
 # Platform: Python 3.8.8 on Windows 10
 # Required Package(s): sys numpy
 
-# 2018116323 윤대헌
-
 ##############################################################
 # Template file for homework programming assignment 1
 # Modify the first 5 lines according to your implementation

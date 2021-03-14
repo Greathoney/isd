@@ -4,8 +4,6 @@
 # Platform: Python 3.8.8 on Windows 10
 # Required Package(s): sys numpy pandas
 
-# 2018116323 윤대헌
-
 import sys
 import numpy as np
 import pandas as pd
