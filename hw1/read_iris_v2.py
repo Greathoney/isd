@@ -1,8 +1,8 @@
-# ID: ELEC946001
-# NAME: Intelligent System Design
-# File name: read_iris_v1.py
+# ID: 2018116323 (undergraduate)
+# NAME: DaeHeon Yoon
+# File name: read_iris_v2.py
 # Platform: Python 3.8.8 on Windows 10
-# Required Package(s): sys nump
+# Required Package(s): sys numpy
 
 # 2018116323 윤대헌
 
