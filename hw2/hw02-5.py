@@ -2,13 +2,12 @@
 # NAME: DaeHeon Yoon
 # File name: hw02-5.py
 # Platform: Python 3.8.8 on Windows 10
-# Required Package(s): sys numpy pandas matplotlib sklearn
+# Required Package(s): numpy pandas matplotlib sklearn
 
 import numpy as np
 import pandas as pd
 
 import matplotlib.pyplot as plt
-from mpl_toolkits import mplot3d
 
 from sklearn.model_selection import train_test_split
 
