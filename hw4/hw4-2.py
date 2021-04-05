@@ -1,15 +1,35 @@
+# ID: 2018116323 (undergraduate)
+# NAME: DaeHeon Yoon
+# File name: hw4-2.py
+# Platform: Python 3.8.8 on Windows 10
+# Required Package(s): sys, os, numpy, sklearn
+
 # coding: utf-8
 import sys, os
 sys.path.append(os.pardir)
 
 import numpy as np
-# from dataset.mnist import load_mnist
 from sklearn.datasets import load_digits
-from sklearn.model_selection import train_test_split
 from two_layer_net import TwoLayerNet
 
-# 데이터 읽기
-# (x_train, t_train), (x_test, t_test) = load_mnist(normalize=True, one_hot_label=True)
+
+def train_test_split(data, target, test_size, seed=1004):
+    import numpy as np
+    
+    test_num = int(data.shape[0] * test_size)
+    train_num = data.shape[0] - test_num
+
+    np.random.seed(seed)
+    shuffled = np.random.permutation(data.shape[0])
+    data = data[shuffled,:]
+    target = target[shuffled]
+    
+    x_train = data[:train_num]
+    x_test = data[train_num:]
+    t_train = target[:train_num]
+    t_test = target[train_num:]
+
+    return x_train, x_test, t_train, t_test
 
 data = load_digits().data
 target = load_digits().target
@@ -48,9 +68,12 @@ for i in range(iters_num):
     loss = network.loss(x_batch, t_batch)
     train_loss_list.append(loss)
     
-    if i % iter_per_epoch == 0:
+    # if i % iter_per_epoch == 0:
+    if i % (iter_per_epoch*100) == 0:  # too many outputs so reduced
         train_acc = network.accuracy(x_train, t_train)
         test_acc = network.accuracy(x_test, t_test)
         train_acc_list.append(train_acc)
         test_acc_list.append(test_acc)
+        print(train_acc, test_acc)
+
 print(train_acc, test_acc)

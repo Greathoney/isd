@@ -1,20 +1,50 @@
+# ID: 2018116323 (undergraduate)
+# NAME: DaeHeon Yoon
+# File name: hw4-1.py
+# Platform: Python 3.8.8 on Windows 10
+# Required Package(s): sys, os, numpy, gzip
+
 # coding: utf-8
 import sys, os
 sys.path.append(os.pardir)
 
 import numpy as np
-# from dataset.mnist import load_mnist
-from mnist import load_mnist
 from two_layer_net import TwoLayerNet
 
-# 데이터 읽기
-(x_train, t_train), (x_test, t_test) = load_mnist(normalize=True, one_hot_label=True)
+def load_mnist(path, kind='train'):
+    import os
+    import gzip
+    import numpy as np
+
+    """Load MNIST data from `path`"""
+    labels_path = os.path.join(path,
+                               '%s-labels-idx1-ubyte.gz'
+                               % kind)
+    images_path = os.path.join(path,
+                               '%s-images-idx3-ubyte.gz'
+                               % kind)
+
+    with gzip.open(labels_path, 'rb') as lbpath:
+        labels = np.frombuffer(lbpath.read(), dtype=np.uint8,
+                               offset=8)
+
+    with gzip.open(images_path, 'rb') as imgpath:
+        images = np.frombuffer(imgpath.read(), dtype=np.uint8,
+                               offset=16).reshape(len(labels), 784)
+
+    return images, labels
+
+x_train, t_train = load_mnist('./', kind='train')
+x_test, t_test = load_mnist('./', kind='t10k')
+
+x_train = x_train / 255.
+x_test = x_test / 255.
 
 network = TwoLayerNet(input_size=784, hidden_size=50, output_size=10)
 
 iters_num = 10000
 train_size = x_train.shape[0]
-batch_size = 100
+batch_size = 150
 learning_rate = 0.1
 
 train_loss_list = []

@@ -1,3 +1,10 @@
+# ID: 2018116323 (undergraduate)
+# NAME: DaeHeon Yoon
+# File name: hw4-1.py
+# Platform: Python 3.8.8 on Windows 10
+# Required Package(s): numpy,
+# (https://github.com/WegraLee/deep-learning-from-scratch/) dataset/mnist.py, ch05/two_layer_net.py
+
 # coding: utf-8
 import sys, os
 sys.path.append(os.pardir)
@@ -13,7 +20,7 @@ network = TwoLayerNet(input_size=784, hidden_size=50, output_size=10)
 
 iters_num = 10000
 train_size = x_train.shape[0]
-batch_size = 100
+batch_size = 150
 learning_rate = 0.1
 
 train_loss_list = []
