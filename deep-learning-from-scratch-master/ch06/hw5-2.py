@@ -558,14 +558,15 @@ def __train(lr, weight_decay, epocs=50):
 
 def find_num(num):
     answer = 0
-    if 1 <= num < 10:
-        return answer
-    elif num < 1:
-        answer -= 1
-        answer *= 10
-    elif num >= 10:
-        answer += 1
-        answer /= 10
+    while True:
+        if 1 <= num < 10:
+            return answer
+        elif num < 1:
+            answer -= 1
+            num *= 10
+        elif num >= 10:
+            answer += 1
+            num /= 10
 
 
 # 하이퍼파라미터 무작위 탐색======================================
@@ -606,8 +607,8 @@ for _ in range(3):
     for key, val_acc_list in sorted(results_val.items(), key=lambda x:x[1][-1], reverse=True):
         print("Best-" + str(i+1) + "(val acc:" + str(val_acc_list[-1]) + ") | " + "lr:" + str(key[0]) + ", weight decay:" + str(key[1]))
         if (i < 6):
-            weight_decay_bests.append(key[0])
-            lr_bests.append(key[1])
+            weight_decay_bests.append(key[1])
+            lr_bests.append(key[0])
 
         plt.subplot(row_num, col_num, i+1)
         plt.title("Best-" + str(i+1))
