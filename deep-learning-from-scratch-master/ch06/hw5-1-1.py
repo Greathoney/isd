@@ -230,52 +230,49 @@ train_size = x_train.shape[0]
 batch_size = 128
 max_iterations = 2000
 
-lr_s = [0.01, 0.1]
 
-for lr in lr_s:
+# 1. 실험용 설정==========
+weight_init_types = {'std=0.01': 0.01, 'Xavier': 'sigmoid', 'He': 'relu'}
+optimizer = SGD(lr=0.01)
 
-    # 1. 실험용 설정==========
-    weight_init_types = {'std={}'.format(lr): lr, 'Xavier': 'sigmoid', 'He': 'relu'}
-    optimizer = SGD(lr=lr)
-
-    networks = {}
-    train_loss = {}
-    for key, weight_type in weight_init_types.items():
-        networks[key] = MultiLayerNet(input_size=64, hidden_size_list=[100, 100, 100, 100],
-                                    output_size=10, weight_init_std=weight_type)
-        train_loss[key] = []
+networks = {}
+train_loss = {}
+for key, weight_type in weight_init_types.items():
+    networks[key] = MultiLayerNet(input_size=784, hidden_size_list=[100, 100, 100, 100],
+                                  output_size=10, weight_init_std=weight_type)
+    train_loss[key] = []
 
 
-    # 2. 훈련 시작==========
-    for i in range(max_iterations):
-        batch_mask = np.random.choice(train_size, batch_size)
-        x_batch = x_train[batch_mask]
-        t_batch = t_train[batch_mask]
-        
-        for key in weight_init_types.keys():
-            grads = networks[key].gradient(x_batch, t_batch)
-            optimizer.update(networks[key].params, grads)
-        
-            loss = networks[key].loss(x_batch, t_batch)
-            train_loss[key].append(loss)
-        
-        if i % 100 == 0:
-            print("===========" + "iteration:" + str(i) + "===========")
-            for key in weight_init_types.keys():
-                loss = networks[key].loss(x_batch, t_batch)
-                print(key + ":" + str(loss))
-
-
-    # 3. 그래프 그리기==========
-    markers = {'std={}'.format(lr): 'o', 'Xavier': 's', 'He': 'D'}
-    x = np.arange(max_iterations)
+# 2. 훈련 시작==========
+for i in range(max_iterations):
+    batch_mask = np.random.choice(train_size, batch_size)
+    x_batch = x_train[batch_mask]
+    t_batch = t_train[batch_mask]
+    
     for key in weight_init_types.keys():
-        plt.plot(x, smooth_curve(train_loss[key]), marker=markers[key], markevery=100, label=key)
-    plt.xlabel("iterations")
-    plt.ylabel("loss")
-    plt.ylim(0, 2.5)
-    plt.legend()
-    plt.show()
+        grads = networks[key].gradient(x_batch, t_batch)
+        optimizer.update(networks[key].params, grads)
+    
+        loss = networks[key].loss(x_batch, t_batch)
+        train_loss[key].append(loss)
+    
+    if i % 100 == 0:
+        print("===========" + "iteration:" + str(i) + "===========")
+        for key in weight_init_types.keys():
+            loss = networks[key].loss(x_batch, t_batch)
+            print(key + ":" + str(loss))
+
+
+# 3. 그래프 그리기==========
+markers = {'std=0.01': 'o', 'Xavier': 's', 'He': 'D'}
+x = np.arange(max_iterations)
+for key in weight_init_types.keys():
+    plt.plot(x, smooth_curve(train_loss[key]), marker=markers[key], markevery=100, label=key)
+plt.xlabel("iterations")
+plt.ylabel("loss")
+plt.ylim(0, 2.5)
+plt.legend()
+plt.show()
 
 
 ######################## batch norm gradient check ###############################
@@ -517,15 +514,14 @@ def __train(lr, weight_decay, epocs=50):
 
 def find_num(num):
     answer = 0
-    while True:
-        if 1 <= num < 10:
-            return answer
-        elif num < 1:
-            answer -= 1
-            num *= 10
-        elif num >= 10:
-            answer += 1
-            num /= 10
+    if 1 <= num < 10:
+        return answer
+    elif num < 1:
+        answer -= 1
+        answer *= 10
+    elif num >= 10:
+        answer += 1
+        answer /= 10
 
 
 # 하이퍼파라미터 무작위 탐색======================================
@@ -565,9 +561,9 @@ for _ in range(3):
 
     for key, val_acc_list in sorted(results_val.items(), key=lambda x:x[1][-1], reverse=True):
         print("Best-" + str(i+1) + "(val acc:" + str(val_acc_list[-1]) + ") | " + "lr:" + str(key[0]) + ", weight decay:" + str(key[1]))
-        if i < 6:
-            weight_decay_bests.append(key[1])
-            lr_bests.append(key[0])
+        if (i < 6):
+            weight_decay_bests.append(key[0])
+            lr_bests.append(key[1])
 
         plt.subplot(row_num, col_num, i+1)
         plt.title("Best-" + str(i+1))

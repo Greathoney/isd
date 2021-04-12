@@ -1,0 +1,20 @@
+순서
+
+6.1 매개변수
+optimizer_compare_naive - 6.1.7 학습 패턴 분석
+optimizer_compare_mnist - 6.1.8 학습 속도 비교
+
+6.2 가중치 초기
+weight_init_activation_histogram - 6.2.2 ???
+weight_init_compare - 6.2.4 학습 속도 비교
+
+6.3 배치 정규화
+batch_norm_gradient_check - 기울기 계산식 정확한지 검증
+batch_norm_test - 6.3.2 배치 정규화 적용
+
+6.4 적절한 학습 - (오버피팅, 가중치 감소, 드롭아웃)
+overfit_weight_decay - 6.4.1 오버피팅 - 가중치 감소
+overfit_dropout - 6.4.3 오버피팅 - 드롭아웃
+
+6.5 적절한 하이퍼파라미터
+hyperparameter_optimization 6.5.3 하이퍼파라미터 최적화

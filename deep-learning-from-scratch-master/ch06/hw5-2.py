@@ -2,7 +2,7 @@
 # NAME: DaeHeon Yoon
 # File name: hw5-1.py
 # Platform: Python 3.8.8 on Windows 10
-# Required Package(s): sys, os, random, matplotlib, collections, numpy
+# Required Package(s): sys, os, random, matplotlib, collections, numpy, sklearn
 
 
 ########################### import libraries #####################################
@@ -11,7 +11,7 @@ sys.path.append(os.pardir)
 
 import random
 import matplotlib.pyplot as plt
-from dataset.mnist import load_mnist
+from sklearn.datasets import load_digits
 
 import numpy as np
 from collections import OrderedDict
@@ -24,10 +24,51 @@ from common.trainer import Trainer
 from common.util import shuffle_dataset
 
 ############################## check data ########################################
-(x_train, t_train), (x_test, t_test) = load_mnist(normalize=True, one_hot_label=True)
-plt.imshow(x_train[random.randint(0, x_train.shape[0])].reshape(28, 28))
-plt.show()
+def load_mnist(normalize=True, one_hot_label=False):
+    def _change_one_hot_label(X):
+        T = np.zeros((X.size, 10))
+        for idx, row in enumerate(T):
+            row[X[idx]] = 1
+            
+        return T
 
+    def train_test_split(data, target, test_size, seed=1004):
+        import numpy as np
+        
+        test_num = int(data.shape[0] * test_size)
+        train_num = data.shape[0] - test_num
+
+        np.random.seed(seed)
+        shuffled = np.random.permutation(data.shape[0])
+        data = data[shuffled,:]
+        target = target[shuffled]
+        
+        x_train = data[:train_num]
+        x_test = data[train_num:]
+        t_train = target[:train_num]
+        t_test = target[train_num:]
+
+        return x_train, x_test, t_train, t_test
+
+    data = load_digits().data
+    target = load_digits().target
+    
+
+    x_train, x_test, t_train, t_test = train_test_split(data, target, test_size=0.2)
+    if normalize:
+        x_train = x_train / 16.
+        x_test = x_test / 16.
+
+    if one_hot_label:
+        t_train = _change_one_hot_label(t_train)
+        t_test = _change_one_hot_label(t_test)  
+
+    return (x_train, t_train), (x_test, t_test)
+
+
+(x_train, t_train), (x_test, t_test) = load_mnist(normalize=True, one_hot_label=True)
+plt.imshow(x_train[random.randint(0, x_train.shape[0])].reshape(8, 8))
+plt.show()
 
 ########################## optimizer compare naive ###############################
 print("\n << optimizer compare naive >>")
@@ -124,7 +165,7 @@ for learning_rate in learning_rates:
     train_loss = {}
     for key in optimizers.keys():
         networks[key] = MultiLayerNet(
-            input_size=784, hidden_size_list=[100, 100, 100, 100],
+            input_size=64, hidden_size_list=[100, 100, 100, 100],
             output_size=10)
         train_loss[key] = []    
 
@@ -284,7 +325,7 @@ print("\n << batch norm gradient check >>")
 # 데이터 읽기
 (x_train, t_train), (x_test, t_test) = load_mnist(normalize=True, one_hot_label=True)
 
-network = MultiLayerNetExtend(input_size=784, hidden_size_list=[100, 100], output_size=10,
+network = MultiLayerNetExtend(input_size=64, hidden_size_list=[100, 100], output_size=10,
                               use_batchnorm=True)
 
 x_batch = x_train[:1]
@@ -314,9 +355,9 @@ batch_size = 100
 learning_rate = 0.01
 
 def __train(weight_init_std):
-    bn_network = MultiLayerNetExtend(input_size=784, hidden_size_list=[100, 100, 100, 100, 100], output_size=10, 
+    bn_network = MultiLayerNetExtend(input_size=64, hidden_size_list=[100, 100, 100, 100, 100], output_size=10, 
                                     weight_init_std=weight_init_std, use_batchnorm=True)
-    network = MultiLayerNetExtend(input_size=784, hidden_size_list=[100, 100, 100, 100, 100], output_size=10,
+    network = MultiLayerNetExtend(input_size=64, hidden_size_list=[100, 100, 100, 100, 100], output_size=10,
                                 weight_init_std=weight_init_std)
     optimizer = SGD(lr=learning_rate)
     
@@ -400,7 +441,7 @@ weight_decay_lambdas = [0.1, 0]
 
 for weight_decay_lambda in weight_decay_lambdas:
 
-    network = MultiLayerNet(input_size=784, hidden_size_list=[100, 100, 100, 100, 100, 100], output_size=10,
+    network = MultiLayerNet(input_size=64, hidden_size_list=[100, 100, 100, 100, 100, 100], output_size=10,
                             weight_decay_lambda=weight_decay_lambda)
     optimizer = SGD(lr=0.01) # 학습률이 0.01인 SGD로 매개변수 갱신
 
@@ -465,7 +506,7 @@ dropout_ratio = 0.2
 
 for use_dropout in use_dropouts:
 
-    network = MultiLayerNetExtend(input_size=784, hidden_size_list=[100, 100, 100, 100, 100, 100],
+    network = MultiLayerNetExtend(input_size=64, hidden_size_list=[100, 100, 100, 100, 100, 100],
                                 output_size=10, use_dropout=use_dropout, dropout_ration=dropout_ratio)
     trainer = Trainer(network, x_train, t_train, x_test, t_test,
                     epochs=301, mini_batch_size=100,
@@ -506,7 +547,7 @@ t_train = t_train[validation_num:]
 
 
 def __train(lr, weight_decay, epocs=50):
-    network = MultiLayerNet(input_size=784, hidden_size_list=[100, 100, 100, 100, 100, 100],
+    network = MultiLayerNet(input_size=64, hidden_size_list=[100, 100, 100, 100, 100, 100],
                             output_size=10, weight_decay_lambda=weight_decay)
     trainer = Trainer(network, x_train, t_train, x_val, t_val,
                       epochs=epocs, mini_batch_size=100,
@@ -517,15 +558,14 @@ def __train(lr, weight_decay, epocs=50):
 
 def find_num(num):
     answer = 0
-    while True:
-        if 1 <= num < 10:
-            return answer
-        elif num < 1:
-            answer -= 1
-            num *= 10
-        elif num >= 10:
-            answer += 1
-            num /= 10
+    if 1 <= num < 10:
+        return answer
+    elif num < 1:
+        answer -= 1
+        answer *= 10
+    elif num >= 10:
+        answer += 1
+        answer /= 10
 
 
 # 하이퍼파라미터 무작위 탐색======================================
@@ -565,9 +605,9 @@ for _ in range(3):
 
     for key, val_acc_list in sorted(results_val.items(), key=lambda x:x[1][-1], reverse=True):
         print("Best-" + str(i+1) + "(val acc:" + str(val_acc_list[-1]) + ") | " + "lr:" + str(key[0]) + ", weight decay:" + str(key[1]))
-        if i < 6:
-            weight_decay_bests.append(key[1])
-            lr_bests.append(key[0])
+        if (i < 6):
+            weight_decay_bests.append(key[0])
+            lr_bests.append(key[1])
 
         plt.subplot(row_num, col_num, i+1)
         plt.title("Best-" + str(i+1))
