@@ -15,17 +15,25 @@ sys.path.append(os.pardir)
 
 import random
 import matplotlib.pyplot as plt
-from dataset.mnist import load_mnist
 
 import numpy as np
 from collections import OrderedDict
 
-from common.optimizer import *
-from common.util import smooth_curve
-from common.multi_layer_net import MultiLayerNet
-from common.multi_layer_net_extend import MultiLayerNetExtend
-from common.trainer import Trainer
-from common.util import shuffle_dataset
+################################ common functions ################################
+
+# from common.optimizer import *
+# from common.util import smooth_curve
+# from common.multi_layer_net import MultiLayerNet
+# from common.multi_layer_net_extend import MultiLayerNetExtend
+# from common.trainer import Trainer
+# from common.util import shuffle_dataset
+
+############################# dataset functions ##################################
+
+# from dataset.mnist import load_mnist
+
+
+
 
 ############################## check data ########################################
 (x_train, t_train), (x_test, t_test) = load_mnist(normalize=True, one_hot_label=True)
