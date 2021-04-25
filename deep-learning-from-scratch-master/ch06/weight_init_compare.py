@@ -20,8 +20,8 @@ max_iterations = 2000
 
 
 # 1. 실험용 설정==========
-weight_init_types = {'std=0.01': 0.01, 'Xavier': 'sigmoid', 'He': 'relu'}
-optimizer = SGD(lr=0.01)
+weight_init_types = {'std=0.1': 0.1, 'Xavier': 'sigmoid', 'He': 'relu'}
+optimizer = SGD(lr=0.1)
 
 networks = {}
 train_loss = {}
@@ -52,7 +52,7 @@ for i in range(max_iterations):
 
 
 # 3. 그래프 그리기==========
-markers = {'std=0.01': 'o', 'Xavier': 's', 'He': 'D'}
+markers = {'std=0.1': 'o', 'Xavier': 's', 'He': 'D'}
 x = np.arange(max_iterations)
 for key in weight_init_types.keys():
     plt.plot(x, smooth_curve(train_loss[key]), marker=markers[key], markevery=100, label=key)
